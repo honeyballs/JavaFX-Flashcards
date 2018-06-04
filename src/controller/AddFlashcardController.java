@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -24,8 +25,7 @@ public class AddFlashcardController {
 
 	private TreeView<Category> tree;
 	private Stage stage;
-	private ObservableList<Flashcard> carList;
-	private Category currentCategory;
+	private ObservableList<Flashcard> cardList;
 	private ObservableList<Category> categories = FXCollections.observableArrayList();
 	private ObservableList<Category> subcategories = FXCollections.observableArrayList();
 	private int selectedCategoryIndex;
@@ -102,8 +102,19 @@ public class AddFlashcardController {
 				} else {
 					card = new Flashcard(question, answer, 0, 0, imagePathLabel.getText());
 				}
-				tree.getRoot().getChildren().get(selectedCategoryIndex).getChildren().get(subCategoryIndex).getValue()
-						.addCard(card);
+				//Get the TreeItem at the required position
+				TreeItem<Category> item = tree.getRoot().getChildren().get(selectedCategoryIndex).getChildren().get(subCategoryIndex);
+				//Add the card to the model of the TreeView
+				item.getValue().addCard(card);
+				//If this category is already selected only the list has to be updated
+				System.out.println("currentIndex: " + tree.getRow(item) + ", Row: " + tree.getSelectionModel().getSelectedIndex());
+				if (tree.getRow(item) == tree.getSelectionModel().getSelectedIndex()) {
+					cardList.add(card);
+					System.out.println("Update Cards");
+				} else {
+					//Otherwise we need to select the category with the newly added card
+					tree.getSelectionModel().select(tree.getRow(item));
+				}
 				// Close the window
 				stage.close();
 
@@ -119,6 +130,10 @@ public class AddFlashcardController {
 		}
 		categoryChoiceBox.setItems(categories);
 		categoryChoiceBox.getSelectionModel().selectFirst();
+	}
+	
+	public void setCardList(ObservableList<Flashcard> list) {
+		this.cardList = list;
 	}
 
 	public void setStage(Stage stage) {

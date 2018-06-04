@@ -105,9 +105,6 @@ public class MainController {
 							List<Flashcard> cards = selectedItem.getValue().getCards();
 							currentCards.clear();
 							currentCards.addAll(cards);
-							for (Flashcard card : currentCards) {
-								System.out.println(card.getQuestion());
-							}
 						}
 					}
 
@@ -158,7 +155,7 @@ public class MainController {
 					public void handle(ActionEvent event) {
 						// Remove the item both from the observable list which is displayed
 						// and the "storage" which in this case is the tree item
-						cardListView.getItems().remove(cell.getItem());
+						currentCards.remove(cell.getIndex());
 						categoryTreeView.getSelectionModel().getSelectedItem().getValue().getCards()
 								.remove(cell.getIndex());
 					}
@@ -249,6 +246,7 @@ public class MainController {
 
 			AddFlashcardController controller = loader.getController();
 			controller.setTreeView(categoryTreeView);
+			controller.setCardList(currentCards);
 			controller.setStage(dialogStage);
 
 			dialogStage.showAndWait();
@@ -256,6 +254,10 @@ public class MainController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void addCard(Flashcard card) {
+		this.currentCards.add(card);
 	}
 
 	@FXML

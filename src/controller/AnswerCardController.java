@@ -65,6 +65,11 @@ public class AnswerCardController {
 			imageView.setFitHeight(75);
 			imageView.setPreserveRatio(true);
 			imageView.setSmooth(true);
+			imageView.setVisible(true);
+		} else {
+			//If no image path is available we remove the imageView completely
+			imageView.setVisible(false);
+			imageView.setManaged(false);
 		}
 	}
 	
